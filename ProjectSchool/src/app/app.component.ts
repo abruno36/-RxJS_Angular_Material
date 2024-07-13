@@ -7,4 +7,11 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'ProjectSchool';
+  public isSmallScreen = false;
+  public popText = false;
+  public applyShadow = false;
+
+  get sidenavMode() {
+    return this.isSmallScreen ? 'over' : 'side';
+  }
 }
