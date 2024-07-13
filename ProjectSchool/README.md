@@ -1,6 +1,6 @@
-# AngularMaterial
+# ProjectSchool
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.8.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.13.
 
 ## Development server
 
