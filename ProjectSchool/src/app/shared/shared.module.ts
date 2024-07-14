@@ -3,12 +3,14 @@ import { ToolbarTitleComponent } from './components/toolbar-title/toolbar-title.
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   imports: [
     MatToolbarModule,
     MatIconModule,
     FormsModule,
+    FlexLayoutModule,
     ReactiveFormsModule
   ],
   declarations: [
