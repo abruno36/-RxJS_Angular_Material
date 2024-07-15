@@ -1,12 +1,14 @@
+import { Component, OnInit, inject } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, OnInit } from '@angular/core';
-import { fromEvent, map } from 'rxjs';
+import { filter, fromEvent, map } from 'rxjs';
 import { MenuItem } from './shared/models/menuItem';
 import { menuItems } from './shared/models/menu';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 
 export const SCROLL_CONTAINER = 'mat-sidenav-content';
 export const TEXT_LIMIT = 50;
 export const SHADOW_LIMIT = 100;
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,19 +19,23 @@ export class AppComponent implements OnInit {
   public popText = false;
   public applyShadow = false;
   public items_menu: MenuItem[] = menuItems;
-
-  constructor(private breakpointObserver: BreakpointObserver) { }
+  private breakpointObserver = inject(BreakpointObserver);
+  private route = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  public menuName = '';
 
   ngOnInit(): void {
     const content = document.getElementsByClassName(SCROLL_CONTAINER)[0];
 
     fromEvent(content, 'scroll')
-      .pipe(
-        map(() => content.scrollTop)
-      )
-      .subscribe({
-        next: (value: number) => this.determineHeader(value)
-      })
+      .pipe(map(() => content.scrollTop))
+      .subscribe((value: number) => this.determineHeader(value))
+
+    this.route.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.menuName = this.activatedRoute.firstChild?.snapshot.routeConfig?.path ?? '';
+    })
   }
 
   determineHeader(scrollTop: number) {
