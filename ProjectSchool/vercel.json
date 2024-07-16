@@ -1,16 +1,10 @@
 {
     "version": 2,
     "builds": [
-      {
-        "src": "angular.json",
-        "use": "@angular/cli"
-      }
+      { "src": "package.json", "use": "@vercel/static-build" }
     ],
     "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
+      { "src": "/(.*)", "dest": "/" }
     ]
   }
   
