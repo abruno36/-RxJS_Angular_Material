@@ -32,14 +32,9 @@ export class AppComponent implements OnInit {
       .subscribe((value: number) => this.determineHeader(value))
 
     this.route.events.pipe(
-      filter(event => event instanceof NavigationEnd),
-      map(event => event as NavigationEnd)
-    ).subscribe((event: NavigationEnd) => {
-      let moduleName = event.url.split('/')[1]
-
-      this.menuName = this.items_menu.filter(
-        (item: MenuItem) => item.link == `/${moduleName}`
-      )[0].label;
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.menuName = this.activatedRoute.firstChild?.snapshot.routeConfig?.path ?? '';
     })
   }
 
