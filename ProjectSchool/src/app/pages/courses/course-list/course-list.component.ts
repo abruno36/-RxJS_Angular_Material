@@ -2,9 +2,10 @@ import { HttpResponse } from '@angular/common/http';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CoursesService } from '@app/services/courses.service';
 import { Category, Course } from '@app/shared/models/course';
-import { debounceTime } from 'rxjs';
+import { catchError, debounceTime, EMPTY, Observable, tap } from 'rxjs';
 
 @Component({
   selector: 'app-course-list',
@@ -15,8 +16,10 @@ export class CourseListComponent implements OnInit {
   public courseList: Course[] = [];
   private courseService = inject(CoursesService);
   private fb = inject(FormBuilder);
+  private snackbar = inject(MatSnackBar)
   public categoryValue = Object.values(Category);
   public form!: FormGroup;
+  public courseData!: Observable<any>;
 
   totalCount: number = 0;
   currentPage: number = 1;
@@ -65,13 +68,21 @@ export class CourseListComponent implements OnInit {
     category: string,
     search: string
   ): void {
-    this.courseService
+    this.courseData = this.courseService
       .get(currentPage, pageSize, category, search)
-      .subscribe((response: HttpResponse<any>) => {
-        this.courseList = response.body as Course[];
-        let totalCount = response.headers.get('X-Total-Count');
-        this.totalCount = totalCount ? Number(totalCount) : 0;
-      });
+      .pipe(
+        tap((response: HttpResponse<any>) => {
+          this.courseList = response.body as Course[];
+          let totalCount = response.headers.get('X-Total-Count');
+          this.totalCount = totalCount ? Number(totalCount) : 0;
+        }),
+        catchError((err: string) => {
+          this.snackbar.open(err, 'Close', {
+            duration: 5000
+          });
+          return EMPTY;
+        })
+      )
   }
 
   public handlePageEvent(e: PageEvent): void {
